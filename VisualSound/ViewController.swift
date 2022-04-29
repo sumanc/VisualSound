@@ -195,6 +195,8 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, AVAudioPlayerDe
     
     func drawWave(layer: CAShapeLayer, path: UIBezierPath, power: CGFloat, color: UIColor) {
         avRecorder.updateMeters()
+        
+        //https://console.firebase.google.com/u/2/project/boonto-id-1/overview
         let level = max(0.2, CGFloat(power) + 50) / 2 // between 0.1 and 25
         let waveLength = CGFloat(level * (100 / 25)) // scaled to max at 100 (our height of our bar)
         
@@ -218,6 +220,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, AVAudioPlayerDe
     }
 }
 
+//https://stackoverflow.com/questions/64234225/how-to-save-a-float-array-in-swift-as-txt-file
 extension Array {
     var bytes: [UInt8] { withUnsafeBytes { .init($0) } }
     var data: Data { withUnsafeBytes { .init($0) } }
