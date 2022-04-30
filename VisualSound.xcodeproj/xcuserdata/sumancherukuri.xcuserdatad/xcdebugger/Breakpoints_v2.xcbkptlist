@@ -7,16 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A0D3D000-3ABA-48CE-B847-792B05E40443"
+            uuid = "209F7A01-5C15-4E43-9387-6E6E43946137"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VisualSound/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "142"
-            endingLineNumber = "142"
-            landmarkName = "start()"
+            startingLineNumber = "213"
+            endingLineNumber = "213"
+            landmarkName = "drawWave(layer:path:power:color:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

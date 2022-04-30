@@ -13,14 +13,14 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, AVAudioPlayerDe
     @IBOutlet weak var waveView: UIView!
     
     let lineWidth = 1.0
-    let space = 1.0
-    let recordLength = 20.0
+    let recordLength = 60.0
     let xMargin = 5.0
+    let sampleRate = 0.2
     
     lazy var firstPoint = CGPoint(x: xMargin, y: waveView.bounds.midY)
     lazy var lastPoint = CGPoint(x: waveView.bounds.size.width - xMargin, y: waveView.bounds.midY)
-    lazy var totalPoints = (lastPoint.x - firstPoint.x) / (lineWidth + space)
-    lazy var interval = ((recordLength / totalPoints) * 1000).rounded() / 1000
+    lazy var totalSamples = Int(recordLength / sampleRate)
+    lazy var sampleSpace = (lastPoint.x - firstPoint.x) / CGFloat(totalSamples)
     
     var recBezierPath: UIBezierPath?
     var playBezierPath: UIBezierPath?
@@ -142,13 +142,16 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, AVAudioPlayerDe
         avRecorder.record(forDuration: recordLength)
         avRecorder.isMeteringEnabled = true
         debugPrint("Started recording: \(Date())")
-        meterTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { timer in
-            if self.audioPowers.count < Int(self.totalPoints) {
+        meterTimer = Timer.scheduledTimer(withTimeInterval: sampleRate, repeats: true, block: { timer in
+            if self.audioPowers.count < Int(self.totalSamples) {
                 self.avRecorder.updateMeters()
                 let power = CGFloat(self.avRecorder.averagePower(forChannel: 0))
                 self.audioPowers.append(power)
-//                debugPrint("Point \(self.audioPowers.count) of \(self.totalPoints)")
+                debugPrint("Point \(self.audioPowers.count) of \(self.totalSamples)")
                 self.drawWave(layer: self.recWaveLayer, path: self.recBezierPath!, power: power, color: UIColor.systemBlue)
+            }
+            else {
+                self.avRecorder.stop()
             }
         })
     }
@@ -173,7 +176,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, AVAudioPlayerDe
                 avPlayer.play()
                 startPoint = firstPoint
                 var powerIndex = 0
-                meterTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { timer in
+                meterTimer = Timer.scheduledTimer(withTimeInterval: sampleRate, repeats: true, block: { timer in
                     if powerIndex < self.audioPowers.count {
                         self.drawWave(layer: self.playWaveLayer, path: self.playBezierPath!, power: self.audioPowers[powerIndex], color: UIColor.systemRed)
                         powerIndex += 1
@@ -207,7 +210,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, AVAudioPlayerDe
         layer.strokeColor = color.cgColor
         layer.path = path.cgPath
         waveView.setNeedsDisplay()
-        startPoint = CGPoint(x: startPoint.x + layer.lineWidth + 1, y: startPoint.y)
+        startPoint = CGPoint(x: startPoint.x + sampleSpace, y: startPoint.y)
     }
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
