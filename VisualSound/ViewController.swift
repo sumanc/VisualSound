@@ -13,7 +13,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, AVAudioPlayerDe
     @IBOutlet weak var waveView: UIView!
     
     let lineWidth = 1.0
-    let recordLength = 60.0
+    let recordLength = 20.0
     let xMargin = 5.0
     let sampleRate = 0.2
     
@@ -147,7 +147,7 @@ class ViewController: UIViewController, AVAudioRecorderDelegate, AVAudioPlayerDe
                 self.avRecorder.updateMeters()
                 let power = CGFloat(self.avRecorder.averagePower(forChannel: 0))
                 self.audioPowers.append(power)
-                debugPrint("Point \(self.audioPowers.count) of \(self.totalSamples)")
+//                debugPrint("Point \(self.audioPowers.count) of \(self.totalSamples)")
                 self.drawWave(layer: self.recWaveLayer, path: self.recBezierPath!, power: power, color: UIColor.systemBlue)
             }
             else {
